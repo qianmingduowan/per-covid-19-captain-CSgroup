@@ -1,0 +1,9 @@
+#### linux
+#### anaconda
+pytorch==1.10.0
+tensorboard
+tqdm
+ipdb
+torchvision
+matolotlib
+# pip install resnest

@@ -1,0 +1,11 @@
+cd transformer
+wget https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_large_patch4_window7_224_22k.pth
+bash create_database.sh
+bash train.sh
+bash test.sh
+cd ..
+cd resnest
+bash train.sh
+bash test.sh
+cd ..
+python ensemble.py

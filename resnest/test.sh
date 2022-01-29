@@ -1,0 +1,17 @@
+python test_101.py --output_dir='output_resnest101_0/checkpoint-89.pt' --data_file='prediction_resnest101_0.csv'
+python test_101.py --output_dir='output_resnest101_1/checkpoint-89.pt' --data_file='prediction_resnest101_1.csv'
+python test_101.py --output_dir='output_resnest101_2/checkpoint-89.pt' --data_file='prediction_resnest101_2.csv'
+python test_101.py --output_dir='output_resnest101_3/checkpoint-89.pt' --data_file='prediction_resnest101_3.csv'
+python test_101.py --output_dir='output_resnest101_4/checkpoint-89.pt' --data_file='prediction_resnest101_4.csv'
+
+python test_50.py --output_dir='output_resnest50_0/checkpoint-89.pt' --data_file='prediction_resnest50_0.csv'
+python test_50.py --output_dir='output_resnest50_1/checkpoint-89.pt' --data_file='prediction_resnest50_1.csv'
+python test_50.py --output_dir='output_resnest50_2/checkpoint-89.pt' --data_file='prediction_resnest50_2.csv'
+python test_50.py --output_dir='output_resnest50_3/checkpoint-89.pt' --data_file='prediction_resnest50_3.csv'
+python test_50.py --output_dir='output_resnest50_4/checkpoint-89.pt' --data_file='prediction_resnest50_4.csv'
+
+python test_200.py --output_dir='output_resnest200_0/checkpoint-89.pt' --data_file='prediction_resnest200_0.csv'
+python test_200.py --output_dir='output_resnest200_1/checkpoint-89.pt' --data_file='prediction_resnest200_1.csv'
+python test_200.py --output_dir='output_resnest200_2/checkpoint-89.pt' --data_file='prediction_resnest200_2.csv'
+python test_200.py --output_dir='output_resnest200_3/checkpoint-89.pt' --data_file='prediction_resnest200_3.csv'
+python test_200.py --output_dir='output_resnest200_4/checkpoint-89.pt' --data_file='prediction_resnest200_4.csv'

@@ -1,0 +1,30 @@
+from glob import glob
+import csv
+import ipdb
+import numpy as np
+import pandas as pd
+csv_list = glob("./*/*.csv")
+
+dict = {}
+### 读每个csv文件的结果，结果保存到一个dict中，key为名称，值为20个预测的list
+for idx,csv_file in enumerate(csv_list):
+    with open(csv_file) as f:
+        f_csv = csv.reader(f)
+        for row in f_csv:
+            if idx==0:
+                dict[row[0]]=[]
+            dict[row[0]].append(float(row[1]))
+subm  = []
+
+for i in dict:
+    assert len(dict[i])==20 ## 确认是否每个id都有20个输出
+    ### 将20个值求平均
+    result = np.mean(dict[i])
+    ### change the average result which <0 to 0.
+    if result<0 or result>100:
+        result = 0.0
+    subm.append([i,np.mean(dict[i])])
+## save same as xjc done.
+subm = pd.DataFrame(subm)
+subm.to_csv('../Testing_COVIDICIAP_Captain-CSgroup.csv', index = None, header = None)
+# import ipdb; ipdb.set_trace()
