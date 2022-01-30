@@ -6,7 +6,7 @@ import pandas as pd
 csv_list = glob("./*/*.csv")
 
 dict = {}
-### 读每个csv文件的结果，结果保存到一个dict中，key为名称，值为20个预测的list
+
 for idx,csv_file in enumerate(csv_list):
     with open(csv_file) as f:
         f_csv = csv.reader(f)
@@ -17,8 +17,8 @@ for idx,csv_file in enumerate(csv_list):
 subm  = []
 
 for i in dict:
-    assert len(dict[i])==20 ## 确认是否每个id都有20个输出
-    ### 将20个值求平均
+    assert len(dict[i])==20 
+
     result = np.mean(dict[i])
     ### change the average result which <0 to 0.
     if result<0 or result>100:
