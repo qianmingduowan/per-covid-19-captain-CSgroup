@@ -40,7 +40,7 @@ with open(excel_path, 'r') as f:
         images_name.append(i[0])                            
         covid_per.append(float(i[1]))                            
         sub_name.append(int(i[2]))                            
-        #folds.append(data_excel.cell_value(i,2))           #缺少这一列
+        #folds.append(data_excel.cell_value(i,2))           
         folds.append(int(i[2])%5+1)    
 
 Training_data = []
@@ -60,7 +60,7 @@ for line in images_name:
 
     Training_data.append(np.array(img))
     Training_label.append(float(covid_per[i]))
-    if folds[i] == 1:                                    #记录下每个fold的img在Training_data里面的索引
+    if folds[i] == 1:                                    
         Fold1.append(i)
     elif folds[i] == 2:
         Fold2.append(i)
