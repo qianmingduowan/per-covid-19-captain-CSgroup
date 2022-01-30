@@ -170,7 +170,7 @@ if __name__ == "__main__":
                     T.CenterCrop((384,384)),
                     T.Resize((224, 224))
                 ])]),
-            T.RandomApply([T.RandomRotation(degrees = (-10,10))],p=0.5),#旋转角度加到45，加上flip
+            T.RandomApply([T.RandomRotation(degrees = (-10,10))],p=0.5),
             # T.RandomVerticalFlip(),
             # T.RandomHorizontalFlip(),
             # T.RandomApply([T.ColorJitter(brightness=0.5, saturation=0.5, hue=0.5)],p=0.5),
@@ -209,7 +209,7 @@ if __name__ == "__main__":
     # model.classifier = nn.Linear(2208, 1)
     # model = model.to(device)  
 
-    model = SwinTransformer(img_size = 224,embed_dim=192, depths=[2, 2, 18, 2], num_heads=[6, 12, 24, 48], window_size=7, num_classes=21841)#换用其他的模型试一下
+    model = SwinTransformer(img_size = 224,embed_dim=192, depths=[2, 2, 18, 2], num_heads=[6, 12, 24, 48], window_size=7, num_classes=21841)
     # model = SwinTransformer()
     model.to(device)
     checkpoint = torch.load('swin_large_patch4_window7_224_22k.pth')
@@ -220,12 +220,12 @@ if __name__ == "__main__":
     model.head = nn.Linear(model.num_features, 1)
     model.to(device)
 
-    # model = SwinTransformer(img_size=224, embed_dim=192, depths=[2, 2, 18, 2], num_heads=[6, 12, 24, 48], window_size = 7, num_classes=21841)#X_ray预训练
+    # model = SwinTransformer(img_size=224, embed_dim=192, depths=[2, 2, 18, 2], num_heads=[6, 12, 24, 48], window_size = 7, num_classes=21841)
     # model.head = nn.Linear(model.num_features, 5)
-    # model.to(device)#初始化模型
+    # model.to(device)#init model
     # checkpoint = torch.load('swin_large_patch4_window7_224_X_ray.pt')
-    # model.load_state_dict(checkpoint)#加载预训练模型
-    # model.head = nn.Linear(model.num_features, 1)#将头部切换为回归用途
+    # model.load_state_dict(checkpoint)
+    # model.head = nn.Linear(model.num_features, 1)
     # # freeze(model)
     # model.to(device)
 
@@ -238,7 +238,7 @@ if __name__ == "__main__":
     EPOCH = 90
 
     # criterion = nn.MSELoss()
-    criterion = huber_loss#试一下不同的Loss
+    criterion = huber_loss
     # criterion = weighted_huber_loss
     # criterion = l1l2_loss
 
@@ -280,7 +280,7 @@ if __name__ == "__main__":
         #     model.layers[0].eval()
         #     model.layers[0].eval()
         
-        for batch in tqdm(train_loader):                            #在train集上面得出指标
+        for batch in tqdm(train_loader):                            
             
             images, labels, weights = batch
             weights = weights.to(device)
@@ -307,7 +307,7 @@ if __name__ == "__main__":
             lr_scheduler.step()
 
         model.eval()                
-        for batch in tqdm(validate_loader):                                  #在test集上面得出指标
+        for batch in tqdm(validate_loader):                                  
             
             images, labels, weights = batch
             images = images.float().to(device)
