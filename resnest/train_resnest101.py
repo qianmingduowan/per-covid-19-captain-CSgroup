@@ -204,8 +204,8 @@ def main(epoch_all,bs=80,tensorboard_path='./tensorboard',output_dir = 'output-r
         itr = -1
         total_loss = 0
         total_correct = 0
-        labels2_tr = np.zeros([len(train_loader),1])
-        labels_pred_tr = np.zeros([len(train_loader),1])
+        labels2_tr = np.array([])
+        labels_pred_tr = np.array([])
 
         print("train begin")
         for batch in tqdm(train_loader):  
@@ -227,7 +227,8 @@ def main(epoch_all,bs=80,tensorboard_path='./tensorboard',output_dir = 'output-r
             tr_sub.append(sub)
             blending_loss.backward()
             optimizer.step()            
-                
+            labels2_tr = np.append(labels2_tr,labels.cpu().detach().numpy())
+            labels_pred_tr = np.append(labels_pred_tr,preds.cpu().detach().numpy())
             scheduler.step()
 
 
@@ -238,7 +239,7 @@ def main(epoch_all,bs=80,tensorboard_path='./tensorboard',output_dir = 'output-r
         writer.add_scalar('MAE_tr', total_correct/len(train_dataset), epoch)       
         train_PC.append(float(PC_mine(labels_pred_tr, labels2_tr)))
 
-        print('Ep: ', epoch,  'MAE_tr: ', total_correct/len(train_dataset), 'loss_tr:', total_loss/len(train_loader))
+        print('Ep: ', epoch,  'MAE_tr: ', total_correct/len(train_dataset), 'loss_tr:', total_loss/len(train_loader),'PC_tr:',PC_mine(labels_pred_tr, labels2_tr))
         
         #save
         print("save")
