@@ -1,3 +1,5 @@
+python create_train_val.py
+
 python train_resnest50.py --validation_part='0'
 python train_resnest50.py --validation_part='1'
 python train_resnest50.py --validation_part='2'
