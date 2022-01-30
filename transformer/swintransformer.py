@@ -117,7 +117,7 @@ class WindowAttention(nn.Module):
             mask: (0/-inf) mask with shape of (num_windows, Wh*Ww, Wh*Ww) or None
         """
         B_, N, C = x.shape#B_, window_size*window_size, C
-        qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)#先通过Linear上升为3倍，再生成三个矩阵
+        qkv = self.qkv(x).reshape(B_, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
 
         q = q * self.scale
@@ -138,8 +138,8 @@ class WindowAttention(nn.Module):
 
         attn = self.attn_drop(attn)
 
-        x = (attn @ v).transpose(1, 2).reshape(B_, N, C)#qkv计算到此为止
-        x = self.proj(x)#经过一个线性层
+        x = (attn @ v).transpose(1, 2).reshape(B_, N, C)
+        x = self.proj(x)
         x = self.proj_drop(x)#Dropout
         return x
 
@@ -198,7 +198,7 @@ class SwinTransformerBlock(nn.Module):
         self.norm1 = norm_layer(dim)
         self.attn = WindowAttention(
             dim, window_size=to_2tuple(self.window_size), num_heads=num_heads,
-            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop)#利用公式计算注意力
+            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop)
 
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
         self.norm2 = norm_layer(dim)
@@ -232,15 +232,15 @@ class SwinTransformerBlock(nn.Module):
 
     def forward(self, x):
         H, W = self.input_resolution
-        B, L, C = x.shape#这里的HW是patch图的HW
+        B, L, C = x.shape
         assert L == H * W, "input feature has wrong size"
 
         shortcut = x
-        x = self.norm1(x)#先经过norm
+        x = self.norm1(x)
         x = x.view(B, H, W, C)
 
         # cyclic shift
-        if self.shift_size > 0:#判断是否移位
+        if self.shift_size > 0:
             shifted_x = torch.roll(x, shifts=(-self.shift_size, -self.shift_size), dims=(1, 2))
         else:
             shifted_x = x
@@ -250,7 +250,7 @@ class SwinTransformerBlock(nn.Module):
         x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
 
         # W-MSA/SW-MSA
-        attn_windows = self.attn(x_windows, mask=self.attn_mask)  # nW*B, window_size*window_size, C    得到注意力(基于不同的window)
+        attn_windows = self.attn(x_windows, mask=self.attn_mask)  # nW*B, window_size*window_size, C    
 
         # merge windows
         attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
@@ -385,7 +385,7 @@ class BasicLayer(nn.Module):
         else:
             self.downsample = None
 
-    def forward(self, x):#输入为patch矩阵
+    def forward(self, x):
         for blk in self.blocks:
             if self.use_checkpoint:
                 x = checkpoint.checkpoint(blk, x)
@@ -421,15 +421,15 @@ class PatchEmbed(nn.Module):
     def __init__(self, img_size=224, patch_size=4, in_chans=3, embed_dim=96, norm_layer=None):
         super().__init__()
         img_size = to_2tuple(img_size)   #(224, 224)
-        patch_size = to_2tuple(patch_size)  #(4, 4)(像素值)
-        patches_resolution = [img_size[0] // patch_size[0], img_size[1] // patch_size[1]] #(56, 56) 由patch组成的矩阵
+        patch_size = to_2tuple(patch_size)  #
+        patches_resolution = [img_size[0] // patch_size[0], img_size[1] // patch_size[1]] #(56, 56)
         self.img_size = img_size
         self.patch_size = patch_size
         self.patches_resolution = patches_resolution
         self.num_patches = patches_resolution[0] * patches_resolution[1]
 
-        self.in_chans = in_chans #输入的channel,为3
-        self.embed_dim = embed_dim#输出的channel,为96
+        self.in_chans = in_chans 
+        self.embed_dim = embed_dim
 
         self.proj = nn.Conv2d(in_chans, embed_dim, kernel_size=patch_size, stride=patch_size)
         if norm_layer is not None:
@@ -442,7 +442,7 @@ class PatchEmbed(nn.Module):
         # FIXME look at relaxing size constraints
         assert H == self.img_size[0] and W == self.img_size[1], \
             f"Input image size ({H}*{W}) doesn't match model ({self.img_size[0]}*{self.img_size[1]})."
-        x = self.proj(x).flatten(2).transpose(1, 2)  # B Ph*Pw C    通过不重叠的4x4卷积处理了输入图，并且展开了w和h
+        x = self.proj(x).flatten(2).transpose(1, 2)  # B Ph*Pw C    
         if self.norm is not None:
             x = self.norm(x)
         return x
@@ -570,9 +570,9 @@ class SwinTransformer(nn.Module):
         return {'relative_position_bias_table'}
 
     def forward_features(self, x):
-        x = self.patch_embed(x)#通过卷积下采样得到了patch图，一个patch是一个像素
+        x = self.patch_embed(x)
         if self.ape:
-            x = x + self.absolute_pos_embed#不用管
+            x = x + self.absolute_pos_embed#
         x = self.pos_drop(x)#Dropout
 
         for layer in self.layers:
